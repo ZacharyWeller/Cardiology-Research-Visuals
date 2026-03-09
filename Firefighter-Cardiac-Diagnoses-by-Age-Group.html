@@ -10,10 +10,12 @@
   --left-col: 170px;
   --plot-w: 560px;
   --right-col: 120px;
+
   --row-gap: 8px;
   --row-pad-y: 6px;
   --row-pad-x: 12px;
-  --grid: #dfe6ee;
+
+  --grid: #dde5ee;
   --row-bg: #f6f8fb;
   --row-border: #e8edf3;
   --connector: #cfd7e3;
@@ -37,8 +39,8 @@ body{
 }
 
 .wrap{
-  width: 10in;
-  padding: 0.18in 0.2in 0.16in;
+  width:10in;
+  padding:0.18in 0.2in 0.16in;
   background:#fff;
 }
 
@@ -101,17 +103,14 @@ body{
 }
 
 .axis-scale{
-  position:relative;
   display:grid;
   grid-template-columns:repeat(6,1fr);
-  align-items:end;
   font-size:12px;
   color:var(--axis);
 }
 
 .axis-scale div{
   text-align:center;
-  position:relative;
 }
 
 .chart-body{
@@ -138,14 +137,18 @@ body{
 }
 
 .row-card{
-  position:relative;
   background:var(--row-bg);
   border:1px solid var(--row-border);
   border-radius:18px;
   padding:var(--row-pad-y) var(--row-pad-x);
-  overflow:hidden;
 }
 
+.plot{
+  position:relative;
+  height:52px;
+}
+
+/* gridlines live inside the plot so they match the point positions exactly */
 .gridline{
   position:absolute;
   top:0;
@@ -154,12 +157,6 @@ body{
   background:var(--grid);
   z-index:0;
   pointer-events:none;
-}
-
-.plot{
-  position:relative;
-  height:54px;
-  z-index:1;
 }
 
 .connector{
@@ -214,7 +211,6 @@ body{
   white-space:nowrap;
 }
 
-/* print */
 @media print{
   html, body{
     width:10in;
@@ -307,27 +303,37 @@ data.forEach(d => {
   const width = Math.abs(d.female - d.male);
   const gap = Math.abs(d.male - d.female);
 
+  // Better label placement:
+  // female normally above, male normally below.
+  // If far apart, both can sit above without looking cramped.
   let femaleTop = -4;
-  let maleTop = 28;
+  let maleTop = 30;
 
-  if (gap >= 8) {
+  if (gap >= 10) {
     femaleTop = -4;
-    maleTop = 20;
+    maleTop = 22;
   }
+
+  // tiny values near 0 need a bit more room so pills don't feel clipped
+  if (Math.min(d.male, d.female) <= 3) {
+    femaleTop = -2;
+    maleTop = 28;
+  }
+
+  const gridlinesHtml = gridTicks.map(v => `
+    <div class="gridline" style="left:${pct(v)};"></div>
+  `).join('');
 
   const row = document.createElement('div');
   row.className = 'row';
-
-  const gridlinesHtml = gridTicks
-    .map(v => `<div class="gridline" style="left:${pct(v)};"></div>`)
-    .join('');
 
   row.innerHTML = `
     <div class="label">${d.label}</div>
 
     <div class="row-card">
-      ${gridlinesHtml}
       <div class="plot">
+        ${gridlinesHtml}
+
         <div class="connector" style="left:${pct(left)}; width:${pct(width)};"></div>
 
         <div class="pill female-label" style="left:${pct(d.female)}; top:${femaleTop}px;">
