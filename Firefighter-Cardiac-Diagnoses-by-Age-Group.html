@@ -7,13 +7,15 @@
 
 <style>
 :root{
-  --left-col: 150px;
-  --plot-w: 320px;
-  --right-col: 78px;
+  --page-w: 10in;
+  --page-h: 8in;
 
-  --row-gap: 8px;
-  --row-pad-y: 7px;
-  --row-pad-x: 12px;
+  --left-col: 1.9in;
+  --right-col: 0.95in;
+
+  --row-gap: 0.10in;
+  --row-pad-y: 0.08in;
+  --row-pad-x: 0.14in;
 
   --grid: #dde5ee;
   --row-bg: #f6f8fb;
@@ -39,9 +41,9 @@ body{
 }
 
 .wrap{
-  width:7in;
-  min-height:5in;
-  padding:0.14in 0.16in;
+  width:var(--page-w);
+  min-height:var(--page-h);
+  padding:0.16in 0.18in 0.14in;
   background:#fff;
 }
 
@@ -49,22 +51,22 @@ body{
   display:flex;
   justify-content:center;
   align-items:center;
-  gap:28px;
-  margin:0 0 10px;
+  gap:0.45in;
+  margin:0 0 0.12in;
   font-weight:700;
-  font-size:12px;
+  font-size:14px;
 }
 
 .legend-item{
   display:flex;
   align-items:center;
-  gap:7px;
+  gap:8px;
   white-space:nowrap;
 }
 
 .legend-dot{
-  width:14px;
-  height:14px;
+  width:16px;
+  height:16px;
   border-radius:50%;
   flex:0 0 auto;
 }
@@ -83,30 +85,30 @@ body{
 
 .axis-head{
   display:grid;
-  grid-template-columns: var(--left-col) var(--plot-w) var(--right-col);
+  grid-template-columns: var(--left-col) minmax(0, 1fr) var(--right-col);
   align-items:end;
-  column-gap:10px;
-  margin-bottom:6px;
+  column-gap:0.14in;
+  margin-bottom:0.08in;
   color:var(--axis-head);
   font-weight:700;
 }
 
 .axis-title-left{
   text-align:right;
-  padding-right:10px;
-  font-size:11px;
+  padding-right:0.12in;
+  font-size:12px;
 }
 
 .axis-title-right{
   text-align:left;
-  padding-left:4px;
-  font-size:11px;
+  padding-left:0.02in;
+  font-size:12px;
 }
 
 .axis-scale{
   position:relative;
-  height:18px;
-  font-size:10px;
+  height:20px;
+  font-size:11px;
   color:var(--axis);
 }
 
@@ -116,15 +118,15 @@ body{
   white-space:nowrap;
 }
 
-.axis-scale span:first-child{
-  transform:none;
+.axis-scale span.first{
   left:0 !important;
+  transform:none;
   text-align:left;
 }
 
-.axis-scale span:last-child{
-  transform:translateX(-100%);
+.axis-scale span.last{
   left:100% !important;
+  transform:translateX(-100%);
   text-align:right;
 }
 
@@ -136,17 +138,17 @@ body{
 
 .row{
   display:grid;
-  grid-template-columns: var(--left-col) var(--plot-w) var(--right-col);
+  grid-template-columns: var(--left-col) minmax(0, 1fr) var(--right-col);
   align-items:center;
-  column-gap:10px;
+  column-gap:0.14in;
 }
 
 .label{
   text-align:right;
   justify-self:end;
-  padding-right:10px;
+  padding-right:0.12in;
   font-weight:700;
-  font-size:12px;
+  font-size:16px;
   line-height:1.1;
   white-space:nowrap;
 }
@@ -154,23 +156,27 @@ body{
 .row-card{
   background:var(--row-bg);
   border:1px solid var(--row-border);
-  border-radius:16px;
+  border-radius:18px;
   padding:var(--row-pad-y) var(--row-pad-x);
 }
 
 .plot{
   position:relative;
-  height:44px;
+  height:64px;
 }
 
 .gridline{
   position:absolute;
-  top:2px;
-  bottom:2px;
+  top:4px;
+  bottom:4px;
   width:1px;
   background:var(--grid);
   z-index:0;
   pointer-events:none;
+}
+
+.gridline.mid{
+  transform:translateX(-50%);
 }
 
 .gridline.first{
@@ -182,14 +188,10 @@ body{
   transform:translateX(-100%);
 }
 
-.gridline:not(.first):not(.last){
-  transform:translateX(-50%);
-}
-
 .connector{
   position:absolute;
   top:50%;
-  height:5px;
+  height:6px;
   background:var(--connector);
   transform:translateY(-50%);
   border-radius:999px;
@@ -199,8 +201,8 @@ body{
 .point{
   position:absolute;
   top:50%;
-  width:14px;
-  height:14px;
+  width:16px;
+  height:16px;
   border-radius:50%;
   transform:translate(-50%,-50%);
   z-index:3;
@@ -208,11 +210,11 @@ body{
 
 .pill{
   position:absolute;
-  min-width:28px;
-  padding:2px 7px;
+  min-width:36px;
+  padding:2px 8px;
   border-radius:999px;
   background:#fff;
-  font-size:10px;
+  font-size:11px;
   line-height:1.1;
   font-weight:700;
   box-shadow:0 1px 3px rgba(0,0,0,0.08);
@@ -231,17 +233,17 @@ body{
 
 .diff{
   text-align:left;
-  padding-left:4px;
+  padding-left:0.02in;
   font-weight:600;
-  font-size:10px;
+  font-size:12px;
   color:#000;
   white-space:nowrap;
 }
 
 @media print{
   html, body{
-    width:7in;
-    height:5in;
+    width:10in;
+    height:8in;
     background:#fff !important;
     -webkit-print-color-adjust:exact;
     print-color-adjust:exact;
@@ -252,9 +254,9 @@ body{
   }
 
   .wrap{
-    width:7in;
-    min-height:5in;
-    padding:0.14in 0.16in;
+    width:10in;
+    min-height:8in;
+    padding:0.16in 0.18in 0.14in;
     margin:0;
   }
 
@@ -264,7 +266,7 @@ body{
 }
 
 @page{
-  size:7in 5in;
+  size:10in 8in;
   margin:0;
 }
 </style>
@@ -287,12 +289,12 @@ body{
     <div class="axis-head">
       <div class="axis-title-left">Diagnosis</div>
       <div class="axis-scale">
-        <span style="left:0%;">0%</span>
+        <span class="first" style="left:0%;">0%</span>
         <span style="left:20%;">20%</span>
         <span style="left:40%;">40%</span>
         <span style="left:60%;">60%</span>
         <span style="left:80%;">80%</span>
-        <span style="left:100%;">100%</span>
+        <span class="last" style="left:100%;">100%</span>
       </div>
       <div class="axis-title-right">Difference</div>
     </div>
@@ -333,10 +335,12 @@ data.forEach(d => {
   const maleLabelPos = d.male < 3 ? 3 : d.male > 97 ? 97 : d.male;
 
   const femaleTop = -2;
-  const maleTop = 28;
+  const maleTop = 42;
 
   const gridlinesHtml = ticks.map((v, i) => {
-    const cls = i === 0 ? 'gridline first' : i === ticks.length - 1 ? 'gridline last' : 'gridline';
+    let cls = 'gridline mid';
+    if (i === 0) cls = 'gridline first';
+    if (i === ticks.length - 1) cls = 'gridline last';
     return `<div class="${cls}" style="left:${pct(v)};"></div>`;
   }).join('');
 
