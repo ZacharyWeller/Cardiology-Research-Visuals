@@ -104,14 +104,16 @@ body{
 }
 
 .axis-scale{
-  display:grid;
-  grid-template-columns:repeat(6,1fr);
+  position:relative;
+  height:20px;
   font-size:12px;
   color:var(--axis);
 }
 
-.axis-scale div{
-  text-align:center;
+.axis-scale span{
+  position:absolute;
+  transform:translateX(-50%);
+  white-space:nowrap;
 }
 
 .chart-body{
@@ -261,12 +263,12 @@ body{
     <div class="axis-head">
       <div class="axis-title-left">Diagnosis</div>
       <div class="axis-scale">
-        <div>0%</div>
-        <div>20%</div>
-        <div>40%</div>
-        <div>60%</div>
-        <div>80%</div>
-        <div>100%</div>
+        <span style="left:0%;">0%</span>
+        <span style="left:20%;">20%</span>
+        <span style="left:40%;">40%</span>
+        <span style="left:60%;">60%</span>
+        <span style="left:80%;">80%</span>
+        <span style="left:100%;">100%</span>
       </div>
       <div class="axis-title-right">Difference</div>
     </div>
@@ -310,14 +312,13 @@ data.forEach(d => {
     `<div class="gridline" style="left:${pct(v)};"></div>`
   ).join('');
 
-  // Fixed label lanes so labels never sit on the dots
-  // female above, male below
-  let femaleTop = -2;
-  let maleTop = 42;
+  // fixed label lanes so labels never cover dots
+  const femaleTop = -2;
+  const maleTop = 42;
 
-  // if very close to 0, nudge inward slightly to keep fully visible
-  const femaleLeft = d.female < 2 ? 2 : d.female > 98 ? 98 : d.female;
-  const maleLeft = d.male < 2 ? 2 : d.male > 98 ? 98 : d.male;
+  // nudge only the label position at the edges so pills stay visible
+  const femaleLabelPos = d.female < 2 ? 2 : d.female > 98 ? 98 : d.female;
+  const maleLabelPos = d.male < 2 ? 2 : d.male > 98 ? 98 : d.male;
 
   row.innerHTML = `
     <div class="label">${d.label}</div>
@@ -328,11 +329,11 @@ data.forEach(d => {
 
         <div class="connector" style="left:${pct(left)}; width:${pct(width)};"></div>
 
-        <div class="pill female-label" style="left:${pct(femaleLeft)}; top:${femaleTop}px;">
+        <div class="pill female-label" style="left:${pct(femaleLabelPos)}; top:${femaleTop}px;">
           ${fmt(d.female)}
         </div>
 
-        <div class="pill male-label" style="left:${pct(maleLeft)}; top:${maleTop}px;">
+        <div class="pill male-label" style="left:${pct(maleLabelPos)}; top:${maleTop}px;">
           ${fmt(d.male)}
         </div>
 
