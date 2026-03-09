@@ -7,12 +7,12 @@
 
 <style>
 :root{
-  --left-col: 170px;
-  --plot-w: 560px;
-  --right-col: 120px;
+  --left-col: 160px;
+  --plot-w: 420px;
+  --right-col: 110px;
 
-  --row-gap: 8px;
-  --row-pad-y: 6px;
+  --row-gap: 10px;
+  --row-pad-y: 8px;
   --row-pad-x: 12px;
 
   --grid: #dde5ee;
@@ -39,8 +39,9 @@ body{
 }
 
 .wrap{
-  width:10in;
-  padding:0.18in 0.2in 0.16in;
+  width:8in;
+  min-height:10in;
+  padding:0.2in 0.22in 0.18in;
   background:#fff;
 }
 
@@ -48,10 +49,10 @@ body{
   display:flex;
   justify-content:center;
   align-items:center;
-  gap:42px;
-  margin:0 0 10px;
+  gap:36px;
+  margin:0 0 12px;
   font-weight:700;
-  font-size:15px;
+  font-size:14px;
 }
 
 .legend-item{
@@ -103,10 +104,8 @@ body{
 }
 
 .axis-scale{
-  position:relative;
   display:grid;
   grid-template-columns:repeat(6,1fr);
-  align-items:end;
   font-size:12px;
   color:var(--axis);
 }
@@ -133,7 +132,7 @@ body{
   justify-self:end;
   padding-right:10px;
   font-weight:700;
-  font-size:16px;
+  font-size:15px;
   line-height:1.1;
   white-space:nowrap;
 }
@@ -147,17 +146,18 @@ body{
 
 .plot{
   position:relative;
-  height:52px;
+  height:64px;
 }
 
 .gridline{
   position:absolute;
-  top:4px;
-  bottom:4px;
+  top:2px;
+  bottom:2px;
   width:1px;
   background:var(--grid);
   z-index:0;
   transform:translateX(-50%);
+  pointer-events:none;
 }
 
 .connector{
@@ -207,15 +207,15 @@ body{
   text-align:left;
   padding-left:8px;
   font-weight:700;
-  font-size:16px;
+  font-size:15px;
   color:#000;
   white-space:nowrap;
 }
 
 @media print{
   html, body{
-    width:10in;
-    height:8in;
+    width:8in;
+    height:10in;
     background:#fff !important;
     -webkit-print-color-adjust:exact;
     print-color-adjust:exact;
@@ -226,9 +226,9 @@ body{
   }
 
   .wrap{
-    width:10in;
-    height:8in;
-    padding:0.18in 0.2in 0.16in;
+    width:8in;
+    min-height:10in;
+    padding:0.2in 0.22in 0.18in;
     margin:0;
   }
 
@@ -238,7 +238,7 @@ body{
 }
 
 @page{
-  size:10in 8in;
+  size:8in 10in;
   margin:0;
 }
 </style>
@@ -260,7 +260,7 @@ body{
   <div class="panel">
     <div class="axis-head">
       <div class="axis-title-left">Diagnosis</div>
-      <div class="axis-scale" id="axisScale">
+      <div class="axis-scale">
         <div>0%</div>
         <div>20%</div>
         <div>40%</div>
@@ -302,30 +302,22 @@ data.forEach(d => {
   const diffNum = +(d.female - d.male).toFixed(1);
   const left = Math.min(d.male, d.female);
   const width = Math.abs(d.female - d.male);
-  const gap = Math.abs(d.male - d.female);
 
-  // Cleaner label system:
-  // female always above
-  // male always below unless distance is large
-  let femaleTop = -2;
-  let maleTop = 28;
-
-  if (gap >= 14) {
-    maleTop = 10;
-  }
-
-  // For tight clusters near zero, keep labels more separated
-  if (Math.max(d.male, d.female) <= 15) {
-    femaleTop = -4;
-    maleTop = 30;
-  }
+  const row = document.createElement('div');
+  row.className = 'row';
 
   const gridlinesHtml = ticks.map(v =>
     `<div class="gridline" style="left:${pct(v)};"></div>`
   ).join('');
 
-  const row = document.createElement('div');
-  row.className = 'row';
+  // Fixed label lanes so labels never sit on the dots
+  // female above, male below
+  let femaleTop = -2;
+  let maleTop = 42;
+
+  // if very close to 0, nudge inward slightly to keep fully visible
+  const femaleLeft = d.female < 2 ? 2 : d.female > 98 ? 98 : d.female;
+  const maleLeft = d.male < 2 ? 2 : d.male > 98 ? 98 : d.male;
 
   row.innerHTML = `
     <div class="label">${d.label}</div>
@@ -336,11 +328,11 @@ data.forEach(d => {
 
         <div class="connector" style="left:${pct(left)}; width:${pct(width)};"></div>
 
-        <div class="pill female-label" style="left:${pct(d.female)}; top:${femaleTop}px;">
+        <div class="pill female-label" style="left:${pct(femaleLeft)}; top:${femaleTop}px;">
           ${fmt(d.female)}
         </div>
 
-        <div class="pill male-label" style="left:${pct(d.male)}; top:${maleTop}px;">
+        <div class="pill male-label" style="left:${pct(maleLeft)}; top:${maleTop}px;">
           ${fmt(d.male)}
         </div>
 
