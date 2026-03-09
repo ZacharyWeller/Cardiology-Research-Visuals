@@ -10,12 +10,12 @@
   --page-w: 11in;
   --page-h: 11in;
 
-  --left-col: 1.72in;
-  --right-col: 0.78in;
+  --left-col: 2.1in;
+  --right-col: 1.0in;
 
-  --row-gap: 0.045in;
-  --row-pad-y: 0.032in;
-  --row-pad-x: 0.10in;
+  --row-gap: 0.08in;
+  --row-pad-y: 0.06in;
+  --row-pad-x: 0.14in;
 
   --grid: #dde5ee;
   --row-bg: #f6f8fb;
@@ -43,7 +43,7 @@ body{
 .wrap{
   width:11in;
   height:11in;
-  padding:0.05in 0.10in 0.05in;
+  padding:0.18in 0.22in 0.16in;
   background:#fff;
   overflow:hidden;
 }
@@ -52,22 +52,22 @@ body{
   display:flex;
   justify-content:center;
   align-items:center;
-  gap:0.28in;
-  margin:0 0 0.04in;
+  gap:0.42in;
+  margin:0 0 0.10in;
   font-weight:700;
-  font-size:11px;
+  font-size:15px;
 }
 
 .legend-item{
   display:flex;
   align-items:center;
-  gap:6px;
+  gap:8px;
   white-space:nowrap;
 }
 
 .legend-dot{
-  width:13px;
-  height:13px;
+  width:16px;
+  height:16px;
   border-radius:50%;
   flex:0 0 auto;
 }
@@ -88,28 +88,28 @@ body{
   display:grid;
   grid-template-columns: var(--left-col) minmax(0,1fr) var(--right-col);
   align-items:end;
-  column-gap:0.08in;
-  margin-bottom:0.025in;
+  column-gap:0.14in;
+  margin-bottom:0.06in;
   color:var(--axis-head);
   font-weight:700;
 }
 
 .axis-title-left{
   text-align:right;
-  padding-right:0.06in;
-  font-size:10px;
+  padding-right:0.10in;
+  font-size:13px;
 }
 
 .axis-title-right{
   text-align:left;
   padding-left:0.02in;
-  font-size:10px;
+  font-size:13px;
 }
 
 .axis-scale{
   position:relative;
-  height:14px;
-  font-size:9px;
+  height:20px;
+  font-size:12px;
   color:var(--axis);
 }
 
@@ -139,35 +139,35 @@ body{
   display:grid;
   grid-template-columns: var(--left-col) minmax(0,1fr) var(--right-col);
   align-items:center;
-  column-gap:0.08in;
+  column-gap:0.14in;
 }
 
 .label{
   text-align:right;
   justify-self:end;
-  padding-right:0.06in;
+  padding-right:0.10in;
   font-weight:700;
-  font-size:10.5px;
-  line-height:1.05;
+  font-size:16px;
+  line-height:1.1;
   white-space:nowrap;
 }
 
 .row-card{
   background:var(--row-bg);
   border:1px solid var(--row-border);
-  border-radius:12px;
+  border-radius:16px;
   padding:var(--row-pad-y) var(--row-pad-x);
 }
 
 .plot{
   position:relative;
-  height:28px;
+  height:52px;
 }
 
 .gridline{
   position:absolute;
-  top:1px;
-  bottom:1px;
+  top:3px;
+  bottom:3px;
   width:1px;
   background:var(--grid);
   z-index:0;
@@ -190,7 +190,7 @@ body{
 .connector{
   position:absolute;
   top:50%;
-  height:3px;
+  height:5px;
   background:var(--connector);
   transform:translateY(-50%);
   border-radius:999px;
@@ -200,8 +200,8 @@ body{
 .point{
   position:absolute;
   top:50%;
-  width:11px;
-  height:11px;
+  width:15px;
+  height:15px;
   border-radius:50%;
   transform:translate(-50%,-50%);
   z-index:3;
@@ -209,11 +209,11 @@ body{
 
 .pill{
   position:absolute;
-  min-width:22px;
-  padding:1px 5px;
+  min-width:30px;
+  padding:2px 7px;
   border-radius:999px;
   background:#fff;
-  font-size:8px;
+  font-size:10px;
   line-height:1.05;
   font-weight:700;
   box-shadow:0 1px 2px rgba(0,0,0,0.08);
@@ -234,7 +234,7 @@ body{
   text-align:left;
   padding-left:0.02in;
   font-weight:600;
-  font-size:8.5px;
+  font-size:11px;
   color:#000;
   white-space:nowrap;
 }
@@ -255,7 +255,7 @@ body{
   .wrap{
     width:11in;
     height:11in;
-    padding:0.05in 0.10in 0.05in;
+    padding:0.18in 0.22in 0.16in;
     margin:0;
     overflow:hidden;
   }
@@ -334,8 +334,8 @@ data.forEach(d => {
   const femaleLabelPos = d.female < 3 ? 3 : d.female > 97 ? 97 : d.female;
   const maleLabelPos = d.male < 3 ? 3 : d.male > 97 ? 97 : d.male;
 
-  const femaleTop = -1;
-  const maleTop = 16;
+  const femaleTop = -2;
+  const maleTop = 34;
 
   const gridlinesHtml = ticks.map((v, i) => {
     let cls = 'gridline mid';
