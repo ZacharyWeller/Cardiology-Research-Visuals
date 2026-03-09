@@ -46,21 +46,6 @@
       padding: 38px 28px 42px;
     }
 
-    .title {
-      text-align: center;
-      font-size: 34px;
-      font-weight: 700;
-      letter-spacing: -0.02em;
-      margin: 0;
-    }
-
-    .subtitle {
-      text-align: center;
-      font-size: 17px;
-      color: var(--muted);
-      margin: 10px 0 24px;
-    }
-
     .legend {
       display: flex;
       justify-content: center;
@@ -123,10 +108,6 @@
     .axis-head {
       margin-bottom: 14px;
       padding: 10px 16px 12px;
-      display: grid;
-      grid-template-columns: var(--left-col) var(--plot-w) var(--right-col);
-      align-items: center;
-      gap: 20px;
       background: #ffffff;
       border: 1px solid #e8edf3;
       border-radius: 16px;
@@ -138,14 +119,10 @@
       font-size: 16px;
       font-weight: 700;
       color: #4b5d73;
-      text-align: center;
     }
 
-    .axis-label-left,
-    .axis-label-right {
-      font-size: 16px;
-      font-weight: 700;
-      color: #4b5d73;
+    .axis-label-left {
+      text-align: center;
     }
 
     .axis-label-right {
@@ -191,20 +168,6 @@
       margin-top: 6px;
     }
 
-    .row {
-      min-height: var(--row-h);
-      position: relative;
-    }
-
-    .label {
-      text-align: right;
-      font-size: 18px;
-      font-weight: 700;
-      color: #243746;
-      padding-right: 10px;
-      white-space: nowrap;
-    }
-
     .row-card {
       grid-column: 2 / 3;
       display: grid;
@@ -214,6 +177,15 @@
       background: #f6f8fb;
       border: 1px solid #e8edf3;
       border-radius: 18px;
+    }
+
+    .label {
+      text-align: right;
+      font-size: 18px;
+      font-weight: 700;
+      color: #243746;
+      padding-right: 10px;
+      white-space: nowrap;
     }
 
     .plot {
@@ -286,14 +258,6 @@
       color: #18324a;
     }
 
-    .diff.pos {
-      color: #18324a;
-    }
-
-    .diff.neg {
-      color: #18324a;
-    }
-
     .footer-note {
       margin-top: 18px;
       color: var(--muted);
@@ -321,21 +285,11 @@
       .wrap {
         padding: 24px 14px 28px;
       }
-
-      .title {
-        font-size: 28px;
-      }
-
-      .subtitle {
-        font-size: 15px;
-      }
     }
   </style>
 </head>
 <body>
   <div class="wrap">
-    
-
     <div class="legend" aria-label="Legend">
       <div class="legend-item male"><span class="legend-dot male"></span>Firefighters &lt;40</div>
       <div class="legend-item female"><span class="legend-dot female"></span>Firefighters ≥40</div>
@@ -352,8 +306,6 @@
         <div class="chart-body" id="chart"></div>
       </div>
     </section>
-
-    
   </div>
 
   <script>
@@ -390,7 +342,7 @@
       const row = document.createElement('div');
       row.className = 'row';
 
-      const diff = +(d.female - d.male).toFixed(1);
+      const diff = Math.abs(d.female - d.male).toFixed(1);
       const left = Math.min(d.male, d.female);
       const width = Math.abs(d.female - d.male);
       const distance = Math.abs(d.female - d.male);
@@ -403,13 +355,24 @@
         <div class="row-card">
           <div class="plot">
             <div class="connector" style="left:${pct(left)}; width:${pct(width)};"></div>
-            <div class="pill male" style="left:${pct(d.male)}; top:50%; transform:translate(-50%, ${compactLabels ? (maleAbove ? '-32px' : '10px') : '-30px'});">${d.male.toFixed(1)}</div>
-            <div class="pill female" style="left:${pct(d.female)}; top:50%; transform:translate(-50%, ${compactLabels ? (femaleAbove ? '-32px' : '10px') : '-30px'});">${d.female.toFixed(1)}</div>
+
+            <div class="pill male"
+              style="left:${pct(d.male)}; top:50%;
+              transform:translate(-50%, ${compactLabels ? (maleAbove ? '-32px' : '10px') : '-30px'});">
+              ${d.male.toFixed(1)}
+            </div>
+
+            <div class="pill female"
+              style="left:${pct(d.female)}; top:50%;
+              transform:translate(-50%, ${compactLabels ? (femaleAbove ? '-32px' : '10px') : '-30px'});">
+              ${d.female.toFixed(1)}
+            </div>
+
             <div class="point male" style="left:${pct(d.male)};"></div>
             <div class="point female" style="left:${pct(d.female)};"></div>
           </div>
         </div>
-        <div class="diff">${diff >= 0 ? '+' : '−'}${Math.abs(diff).toFixed(1)} pts</div>
+        <div class="diff">${diff} pts</div>
       `;
 
       chart.appendChild(row);
@@ -417,5 +380,6 @@
   </script>
 </body>
 </html>
+
 
 
