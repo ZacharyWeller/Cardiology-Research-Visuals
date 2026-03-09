@@ -7,13 +7,13 @@
 
 <style>
 :root{
-  --left-col: 165px;
-  --plot-w: 520px;
-  --right-col: 92px;
+  --left-col: 150px;
+  --plot-w: 320px;
+  --right-col: 78px;
 
-  --row-gap: 10px;
-  --row-pad-y: 8px;
-  --row-pad-x: 16px;
+  --row-gap: 8px;
+  --row-pad-y: 7px;
+  --row-pad-x: 12px;
 
   --grid: #dde5ee;
   --row-bg: #f6f8fb;
@@ -39,9 +39,9 @@ body{
 }
 
 .wrap{
-  width:10in;
-  min-height:8in;
-  padding:0.18in 0.24in 0.16in;
+  width:7in;
+  min-height:5in;
+  padding:0.14in 0.16in;
   background:#fff;
 }
 
@@ -49,22 +49,22 @@ body{
   display:flex;
   justify-content:center;
   align-items:center;
-  gap:40px;
-  margin:0 0 14px;
+  gap:28px;
+  margin:0 0 10px;
   font-weight:700;
-  font-size:14px;
+  font-size:12px;
 }
 
 .legend-item{
   display:flex;
   align-items:center;
-  gap:8px;
+  gap:7px;
   white-space:nowrap;
 }
 
 .legend-dot{
-  width:16px;
-  height:16px;
+  width:14px;
+  height:14px;
   border-radius:50%;
   flex:0 0 auto;
 }
@@ -85,28 +85,28 @@ body{
   display:grid;
   grid-template-columns: var(--left-col) var(--plot-w) var(--right-col);
   align-items:end;
-  column-gap:14px;
-  margin-bottom:8px;
+  column-gap:10px;
+  margin-bottom:6px;
   color:var(--axis-head);
   font-weight:700;
 }
 
 .axis-title-left{
   text-align:right;
-  padding-right:12px;
-  font-size:12px;
+  padding-right:10px;
+  font-size:11px;
 }
 
 .axis-title-right{
   text-align:left;
-  padding-left:6px;
-  font-size:12px;
+  padding-left:4px;
+  font-size:11px;
 }
 
 .axis-scale{
   position:relative;
-  height:22px;
-  font-size:11px;
+  height:18px;
+  font-size:10px;
   color:var(--axis);
 }
 
@@ -116,7 +116,6 @@ body{
   white-space:nowrap;
 }
 
-/* keep edge tick labels from feeling jammed against side columns */
 .axis-scale span:first-child{
   transform:none;
   left:0 !important;
@@ -139,15 +138,15 @@ body{
   display:grid;
   grid-template-columns: var(--left-col) var(--plot-w) var(--right-col);
   align-items:center;
-  column-gap:14px;
+  column-gap:10px;
 }
 
 .label{
   text-align:right;
   justify-self:end;
-  padding-right:12px;
+  padding-right:10px;
   font-weight:700;
-  font-size:15px;
+  font-size:12px;
   line-height:1.1;
   white-space:nowrap;
 }
@@ -155,38 +154,42 @@ body{
 .row-card{
   background:var(--row-bg);
   border:1px solid var(--row-border);
-  border-radius:18px;
+  border-radius:16px;
   padding:var(--row-pad-y) var(--row-pad-x);
 }
 
 .plot{
   position:relative;
-  height:62px;
+  height:44px;
 }
 
 .gridline{
   position:absolute;
-  top:3px;
-  bottom:3px;
+  top:2px;
+  bottom:2px;
   width:1px;
   background:var(--grid);
   z-index:0;
-  transform:translateX(-50%);
   pointer-events:none;
 }
 
 .gridline.first{
-  transform:none;
+  left:0 !important;
 }
 
 .gridline.last{
+  left:100% !important;
   transform:translateX(-100%);
+}
+
+.gridline:not(.first):not(.last){
+  transform:translateX(-50%);
 }
 
 .connector{
   position:absolute;
   top:50%;
-  height:6px;
+  height:5px;
   background:var(--connector);
   transform:translateY(-50%);
   border-radius:999px;
@@ -196,8 +199,8 @@ body{
 .point{
   position:absolute;
   top:50%;
-  width:16px;
-  height:16px;
+  width:14px;
+  height:14px;
   border-radius:50%;
   transform:translate(-50%,-50%);
   z-index:3;
@@ -205,11 +208,11 @@ body{
 
 .pill{
   position:absolute;
-  min-width:34px;
-  padding:2px 8px;
+  min-width:28px;
+  padding:2px 7px;
   border-radius:999px;
   background:#fff;
-  font-size:11px;
+  font-size:10px;
   line-height:1.1;
   font-weight:700;
   box-shadow:0 1px 3px rgba(0,0,0,0.08);
@@ -228,17 +231,17 @@ body{
 
 .diff{
   text-align:left;
-  padding-left:6px;
-  font-weight:700;
-  font-size:11px;
+  padding-left:4px;
+  font-weight:600;
+  font-size:10px;
   color:#000;
   white-space:nowrap;
 }
 
 @media print{
   html, body{
-    width:10in;
-    height:8in;
+    width:7in;
+    height:5in;
     background:#fff !important;
     -webkit-print-color-adjust:exact;
     print-color-adjust:exact;
@@ -249,9 +252,9 @@ body{
   }
 
   .wrap{
-    width:10in;
-    min-height:8in;
-    padding:0.18in 0.24in 0.16in;
+    width:7in;
+    min-height:5in;
+    padding:0.14in 0.16in;
     margin:0;
   }
 
@@ -261,7 +264,7 @@ body{
 }
 
 @page{
-  size:10in 8in;
+  size:7in 5in;
   margin:0;
 }
 </style>
@@ -326,21 +329,19 @@ data.forEach(d => {
   const left = Math.min(d.male, d.female);
   const width = Math.abs(d.female - d.male);
 
-  const row = document.createElement('div');
-  row.className = 'row';
+  const femaleLabelPos = d.female < 3 ? 3 : d.female > 97 ? 97 : d.female;
+  const maleLabelPos = d.male < 3 ? 3 : d.male > 97 ? 97 : d.male;
+
+  const femaleTop = -2;
+  const maleTop = 28;
 
   const gridlinesHtml = ticks.map((v, i) => {
     const cls = i === 0 ? 'gridline first' : i === ticks.length - 1 ? 'gridline last' : 'gridline';
     return `<div class="${cls}" style="left:${pct(v)};"></div>`;
   }).join('');
 
-  /* fixed lanes so labels never cover dots */
-  const femaleTop = -2;
-  const maleTop = 42;
-
-  /* nudge only label positions at edges */
-  const femaleLabelPos = d.female < 3 ? 3 : d.female > 97 ? 97 : d.female;
-  const maleLabelPos = d.male < 3 ? 3 : d.male > 97 ? 97 : d.male;
+  const row = document.createElement('div');
+  row.className = 'row';
 
   row.innerHTML = `
     <div class="label">${d.label}</div>
