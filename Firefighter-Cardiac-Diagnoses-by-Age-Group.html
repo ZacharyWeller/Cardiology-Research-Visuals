@@ -150,15 +150,13 @@ body{
   height:52px;
 }
 
-/* Gridlines share the exact same plot coordinate system as dots/labels */
 .gridline{
   position:absolute;
-  top:-6px;
-  bottom:-6px;
+  top:4px;
+  bottom:4px;
   width:1px;
   background:var(--grid);
   z-index:0;
-  pointer-events:none;
   transform:translateX(-50%);
 }
 
@@ -214,7 +212,6 @@ body{
   white-space:nowrap;
 }
 
-/* print */
 @media print{
   html, body{
     width:10in;
@@ -263,7 +260,7 @@ body{
   <div class="panel">
     <div class="axis-head">
       <div class="axis-title-left">Diagnosis</div>
-      <div class="axis-scale">
+      <div class="axis-scale" id="axisScale">
         <div>0%</div>
         <div>20%</div>
         <div>40%</div>
@@ -296,7 +293,7 @@ const data = [
 
 const chart = document.getElementById('chart');
 const max = 100;
-const gridTicks = [0, 20, 40, 60, 80, 100];
+const ticks = [0, 20, 40, 60, 80, 100];
 
 const fmt = (v) => Number.isInteger(v) ? String(v) : v.toFixed(1);
 const pct = (v) => `${(v / max) * 100}%`;
@@ -307,30 +304,28 @@ data.forEach(d => {
   const width = Math.abs(d.female - d.male);
   const gap = Math.abs(d.male - d.female);
 
-  /* Stable label lanes:
-     - female always above
-     - male usually below
-     - if far apart, male can sit slightly above but offset from the dot
-  */
-  let femaleTop = -4;
-  let maleTop = 26;
+  // Cleaner label system:
+  // female always above
+  // male always below unless distance is large
+  let femaleTop = -2;
+  let maleTop = 28;
 
-  if (gap >= 12) {
-    maleTop = 12;
+  if (gap >= 14) {
+    maleTop = 10;
   }
 
-  // For very small values near 0, keep labels safely visible.
-  if (Math.min(d.male, d.female) <= 3) {
-    femaleTop = -2;
-    maleTop = 26;
+  // For tight clusters near zero, keep labels more separated
+  if (Math.max(d.male, d.female) <= 15) {
+    femaleTop = -4;
+    maleTop = 30;
   }
+
+  const gridlinesHtml = ticks.map(v =>
+    `<div class="gridline" style="left:${pct(v)};"></div>`
+  ).join('');
 
   const row = document.createElement('div');
   row.className = 'row';
-
-  const gridlinesHtml = gridTicks.map(v =>
-    `<div class="gridline" style="left:${pct(v)};"></div>`
-  ).join('');
 
   row.innerHTML = `
     <div class="label">${d.label}</div>
