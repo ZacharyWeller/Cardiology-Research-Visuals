@@ -7,13 +7,13 @@
 
 <style>
 :root{
-  --left-col: 160px;
-  --plot-w: 420px;
-  --right-col: 110px;
+  --left-col: 165px;
+  --plot-w: 520px;
+  --right-col: 92px;
 
   --row-gap: 10px;
   --row-pad-y: 8px;
-  --row-pad-x: 12px;
+  --row-pad-x: 16px;
 
   --grid: #dde5ee;
   --row-bg: #f6f8fb;
@@ -39,9 +39,9 @@ body{
 }
 
 .wrap{
-  width:8in;
-  min-height:10in;
-  padding:0.2in 0.22in 0.18in;
+  width:10in;
+  min-height:8in;
+  padding:0.18in 0.24in 0.16in;
   background:#fff;
 }
 
@@ -49,8 +49,8 @@ body{
   display:flex;
   justify-content:center;
   align-items:center;
-  gap:36px;
-  margin:0 0 12px;
+  gap:40px;
+  margin:0 0 14px;
   font-weight:700;
   font-size:14px;
 }
@@ -85,7 +85,7 @@ body{
   display:grid;
   grid-template-columns: var(--left-col) var(--plot-w) var(--right-col);
   align-items:end;
-  column-gap:12px;
+  column-gap:14px;
   margin-bottom:8px;
   color:var(--axis-head);
   font-weight:700;
@@ -93,20 +93,20 @@ body{
 
 .axis-title-left{
   text-align:right;
-  padding-right:10px;
-  font-size:13px;
+  padding-right:12px;
+  font-size:12px;
 }
 
 .axis-title-right{
   text-align:left;
-  padding-left:8px;
-  font-size:13px;
+  padding-left:6px;
+  font-size:12px;
 }
 
 .axis-scale{
   position:relative;
-  height:20px;
-  font-size:12px;
+  height:22px;
+  font-size:11px;
   color:var(--axis);
 }
 
@@ -114,6 +114,19 @@ body{
   position:absolute;
   transform:translateX(-50%);
   white-space:nowrap;
+}
+
+/* keep edge tick labels from feeling jammed against side columns */
+.axis-scale span:first-child{
+  transform:none;
+  left:0 !important;
+  text-align:left;
+}
+
+.axis-scale span:last-child{
+  transform:translateX(-100%);
+  left:100% !important;
+  text-align:right;
 }
 
 .chart-body{
@@ -126,13 +139,13 @@ body{
   display:grid;
   grid-template-columns: var(--left-col) var(--plot-w) var(--right-col);
   align-items:center;
-  column-gap:12px;
+  column-gap:14px;
 }
 
 .label{
   text-align:right;
   justify-self:end;
-  padding-right:10px;
+  padding-right:12px;
   font-weight:700;
   font-size:15px;
   line-height:1.1;
@@ -148,18 +161,26 @@ body{
 
 .plot{
   position:relative;
-  height:64px;
+  height:62px;
 }
 
 .gridline{
   position:absolute;
-  top:2px;
-  bottom:2px;
+  top:3px;
+  bottom:3px;
   width:1px;
   background:var(--grid);
   z-index:0;
   transform:translateX(-50%);
   pointer-events:none;
+}
+
+.gridline.first{
+  transform:none;
+}
+
+.gridline.last{
+  transform:translateX(-100%);
 }
 
 .connector{
@@ -207,17 +228,17 @@ body{
 
 .diff{
   text-align:left;
-  padding-left:8px;
+  padding-left:6px;
   font-weight:700;
-  font-size:15px;
+  font-size:11px;
   color:#000;
   white-space:nowrap;
 }
 
 @media print{
   html, body{
-    width:8in;
-    height:10in;
+    width:10in;
+    height:8in;
     background:#fff !important;
     -webkit-print-color-adjust:exact;
     print-color-adjust:exact;
@@ -228,9 +249,9 @@ body{
   }
 
   .wrap{
-    width:8in;
-    min-height:10in;
-    padding:0.2in 0.22in 0.18in;
+    width:10in;
+    min-height:8in;
+    padding:0.18in 0.24in 0.16in;
     margin:0;
   }
 
@@ -240,7 +261,7 @@ body{
 }
 
 @page{
-  size:8in 10in;
+  size:10in 8in;
   margin:0;
 }
 </style>
@@ -301,24 +322,25 @@ const fmt = (v) => Number.isInteger(v) ? String(v) : v.toFixed(1);
 const pct = (v) => `${(v / max) * 100}%`;
 
 data.forEach(d => {
-  const diffNum = +(d.female - d.male).toFixed(1);
+  const diffNum = Math.abs(+(d.female - d.male).toFixed(1));
   const left = Math.min(d.male, d.female);
   const width = Math.abs(d.female - d.male);
 
   const row = document.createElement('div');
   row.className = 'row';
 
-  const gridlinesHtml = ticks.map(v =>
-    `<div class="gridline" style="left:${pct(v)};"></div>`
-  ).join('');
+  const gridlinesHtml = ticks.map((v, i) => {
+    const cls = i === 0 ? 'gridline first' : i === ticks.length - 1 ? 'gridline last' : 'gridline';
+    return `<div class="${cls}" style="left:${pct(v)};"></div>`;
+  }).join('');
 
-  // fixed label lanes so labels never cover dots
+  /* fixed lanes so labels never cover dots */
   const femaleTop = -2;
   const maleTop = 42;
 
-  // nudge only the label position at the edges so pills stay visible
-  const femaleLabelPos = d.female < 2 ? 2 : d.female > 98 ? 98 : d.female;
-  const maleLabelPos = d.male < 2 ? 2 : d.male > 98 ? 98 : d.male;
+  /* nudge only label positions at edges */
+  const femaleLabelPos = d.female < 3 ? 3 : d.female > 97 ? 97 : d.female;
+  const maleLabelPos = d.male < 3 ? 3 : d.male > 97 ? 97 : d.male;
 
   row.innerHTML = `
     <div class="label">${d.label}</div>
@@ -342,7 +364,7 @@ data.forEach(d => {
       </div>
     </div>
 
-    <div class="diff">${diffNum >= 0 ? '+' : ''}${diffNum.toFixed(1)} pts</div>
+    <div class="diff">${diffNum.toFixed(1)} pts</div>
   `;
 
   chart.appendChild(row);
