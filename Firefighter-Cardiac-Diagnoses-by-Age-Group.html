@@ -1,102 +1,142 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Firefighter Cardiac Diagnoses by Age Group</title>
 
 <style>
-
 :root{
-  --left-col:190px;
-  --plot-w:850px;
-  --right-col:140px;
-  --row-h:45px;
+  --left-col: 170px;
+  --plot-w: 560px;
+  --right-col: 120px;
+  --row-gap: 8px;
+  --row-pad-y: 6px;
+  --row-pad-x: 12px;
 }
 
-*{box-sizing:border-box}
+*{ box-sizing:border-box; }
+
+html, body{
+  margin:0;
+  padding:0;
+  background:#ffffff;
+  font-family: Arial, Helvetica, sans-serif;
+  color:#000;
+}
 
 body{
-  margin:0;
-  font-family:Arial, Helvetica, sans-serif;
-  background:#ffffff;
+  display:flex;
+  justify-content:center;
 }
 
 .wrap{
-  width:min(1200px,100%);
-  margin:auto;
-  padding:30px 20px 40px;
+  width: 10in;
+  padding: 0.18in 0.2in 0.16in;
+  background:#fff;
 }
 
 .legend{
   display:flex;
   justify-content:center;
-  gap:40px;
-  margin-bottom:20px;
+  align-items:center;
+  gap:42px;
+  margin:0 0 10px;
   font-weight:700;
-  font-size:16px;
+  font-size:15px;
+}
+
+.legend-item{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  white-space:nowrap;
 }
 
 .legend-dot{
-  width:18px;
-  height:18px;
+  width:16px;
+  height:16px;
   border-radius:50%;
-  display:inline-block;
-  margin-right:8px;
+  flex:0 0 auto;
 }
 
-.male{background:linear-gradient(135deg,#8bd1ff,#1565c0)}
-.female{background:linear-gradient(135deg,#ffb1b1,#c62828)}
+.male{
+  background:linear-gradient(135deg,#8bd1ff,#1565c0);
+}
+
+.female{
+  background:linear-gradient(135deg,#ffb1b1,#c62828);
+}
 
 .panel{
-  background:#ffffff;
+  background:#fff;
 }
 
 .axis-head{
   display:grid;
-  grid-template-columns:var(--left-col) var(--plot-w) var(--right-col);
-  align-items:center;
-  margin-bottom:12px;
-  font-weight:700;
-  text-align:center;
+  grid-template-columns: var(--left-col) var(--plot-w) var(--right-col);
+  align-items:end;
+  column-gap:12px;
+  margin-bottom:8px;
   color:#4b5d73;
+  font-weight:700;
+}
+
+.axis-title-left{
+  text-align:left;
+  padding-left:2px;
+  font-size:13px;
+}
+
+.axis-title-right{
+  text-align:left;
+  padding-left:8px;
+  font-size:13px;
 }
 
 .axis-scale{
   display:grid;
   grid-template-columns:repeat(6,1fr);
-  font-size:13px;
+  align-items:end;
+  font-size:12px;
   color:#5f7288;
+}
+
+.axis-scale div{
+  text-align:center;
 }
 
 .chart-body{
   display:flex;
   flex-direction:column;
-  gap:12px;
+  gap:var(--row-gap);
 }
 
 .row{
   display:grid;
-  grid-template-columns:var(--left-col) var(--plot-w) var(--right-col);
+  grid-template-columns: var(--left-col) var(--plot-w) var(--right-col);
   align-items:center;
+  column-gap:12px;
 }
 
 .label{
   text-align:right;
   padding-right:10px;
   font-weight:700;
+  font-size:16px;
+  line-height:1.1;
 }
 
 .row-card{
   background:#f6f8fb;
-  border-radius:18px;
   border:1px solid #e8edf3;
-  padding:10px 14px;
+  border-radius:18px;
+  padding:var(--row-pad-y) var(--row-pad-x);
 }
 
 .plot{
   position:relative;
-  height:40px;
+  height:36px;
 }
 
 .connector{
@@ -111,154 +151,171 @@ body{
 .point{
   position:absolute;
   top:50%;
-  width:18px;
-  height:18px;
+  width:16px;
+  height:16px;
   border-radius:50%;
   transform:translate(-50%,-50%);
 }
 
 .pill{
   position:absolute;
-  top:-18px;
-  transform:translateX(-50%);
-  background:#fff;
+  min-width:34px;
   padding:2px 8px;
   border-radius:999px;
-  font-size:12px;
+  background:#fff;
+  font-size:11px;
+  line-height:1.1;
   font-weight:700;
   box-shadow:0 1px 3px rgba(0,0,0,0.08);
+  white-space:nowrap;
+  transform:translateX(-50%);
+}
+
+.pill.male-label{
+  color:#1565c0;
+}
+
+.pill.female-label{
+  color:#c62828;
 }
 
 .diff{
-  text-align:right;
+  text-align:left;
+  padding-left:8px;
   font-weight:700;
+  font-size:16px;
   color:#000;
+  white-space:nowrap;
 }
 
-
-/* -------- PRINT SETTINGS -------- */
-
+/* print */
 @media print{
-
-  html,body{
+  html, body{
     width:10in;
     height:8in;
-    margin:0;
-    padding:0;
-    background:#ffffff !important;
+    background:#fff !important;
     -webkit-print-color-adjust:exact;
     print-color-adjust:exact;
   }
 
+  body{
+    display:block;
+  }
+
   .wrap{
-    width:100%;
-    padding:0;
+    width:10in;
+    height:8in;
+    padding:0.18in 0.2in 0.16in;
     margin:0;
   }
 
   .row{
     break-inside:avoid;
   }
-
 }
 
 @page{
   size:10in 8in;
-  margin:0.5in;
+  margin:0;
 }
-
 </style>
 </head>
 
 <body>
-
 <div class="wrap">
-
-<div class="legend">
-  <div><span class="legend-dot male"></span>Firefighters &lt;40</div>
-  <div><span class="legend-dot female"></span>Firefighters ≥40</div>
-</div>
-
-<div class="panel">
-
-<div class="axis-head">
-  <div>Diagnosis</div>
-  <div class="axis-scale">
-    <div>0%</div>
-    <div>20%</div>
-    <div>40%</div>
-    <div>60%</div>
-    <div>80%</div>
-    <div>100%</div>
+  <div class="legend">
+    <div class="legend-item">
+      <span class="legend-dot male"></span>
+      <span>Firefighters &lt;40</span>
+    </div>
+    <div class="legend-item">
+      <span class="legend-dot female"></span>
+      <span>Firefighters ≥40</span>
+    </div>
   </div>
-  <div>Difference</div>
-</div>
 
-<div class="chart-body" id="chart"></div>
+  <div class="panel">
+    <div class="axis-head">
+      <div class="axis-title-left">Diagnosis</div>
+      <div class="axis-scale">
+        <div>0%</div>
+        <div>20%</div>
+        <div>40%</div>
+        <div>60%</div>
+        <div>80%</div>
+        <div>100%</div>
+      </div>
+      <div class="axis-title-right">Difference</div>
+    </div>
 
-</div>
-
+    <div class="chart-body" id="chart"></div>
+  </div>
 </div>
 
 <script>
+const data = [
+  {label:'CAD/Ischemic', male:48.0, female:83.2},
+  {label:'Valvular',     male:10.0, female:0.8},
+  {label:'iLVH',         male:12.0, female:5.3},
+  {label:'CM NOS',       male:6.0,  female:0.0},
+  {label:'Aortic',       male:4.0,  female:2.0},
+  {label:'Mitral',       male:6.0,  female:2.0},
+  {label:'Arrhythmia',   male:20.0, female:17.9},
+  {label:'Myocarditis',  male:4.0,  female:0.8},
+  {label:'Pericarditis', male:2.0,  female:0.8},
+  {label:'Congenital',   male:4.0,  female:2.0},
+  {label:'Other',        male:14.0, female:13.4},
+  {label:'Normal',       male:48.0, female:32.4}
+];
 
-const data=[
-{label:'CAD/Ischemic',male:48.0,female:83.2},
-{label:'Valvular',male:10.0,female:0.8},
-{label:'iLVH',male:12.0,female:5.3},
-{label:'CM NOS',male:6.0,female:0.0},
-{label:'Aortic',male:4.0,female:2.0},
-{label:'Mitral',male:6.0,female:2.0},
-{label:'Arrhythmia',male:20.0,female:17.9},
-{label:'Myocarditis',male:4.0,female:0.8},
-{label:'Pericarditis',male:2.0,female:0.8},
-{label:'Congenital',male:4.0,female:2.0},
-{label:'Other',male:14.0,female:13.4},
-{label:'Normal',male:48.0,female:32.4}
-]
+const chart = document.getElementById('chart');
+const max = 100;
 
-const chart=document.getElementById('chart')
-const max=100
+const fmt = (v) => Number.isInteger(v) ? String(v) : v.toFixed(1);
+const pct = (v) => `${(v / max) * 100}%`;
 
-const pct=v=> (v/max*100)+'%'
+data.forEach(d => {
+  const diffNum = +(d.female - d.male).toFixed(1);
+  const left = Math.min(d.male, d.female);
+  const width = Math.abs(d.female - d.male);
 
-data.forEach(d=>{
+  const close = Math.abs(d.male - d.female) < 6;
 
-const diff=(d.female-d.male).toFixed(1)
-const left=Math.min(d.male,d.female)
-const width=Math.abs(d.female-d.male)
+  // Default label lanes:
+  // male slightly above, female higher above.
+  // If close, split one above and one below to prevent collisions.
+  const maleTop = close ? '20px' : '16px';
+  const femaleTop = close ? '-6px' : '-6px';
 
-const row=document.createElement('div')
-row.className='row'
+  const row = document.createElement('div');
+  row.className = 'row';
 
-row.innerHTML=`
-<div class="label">${d.label}</div>
+  row.innerHTML = `
+    <div class="label">${d.label}</div>
 
-<div class="row-card">
+    <div class="row-card">
+      <div class="plot">
+        <div class="connector" style="left:${pct(left)}; width:${pct(width)};"></div>
 
-<div class="plot">
+        <div class="pill male-label" style="left:${pct(d.male)}; top:${maleTop};">
+          ${fmt(d.male)}
+        </div>
 
-<div class="connector" style="left:${pct(left)};width:${pct(width)}"></div>
+        <div class="pill female-label" style="left:${pct(d.female)}; top:${femaleTop};">
+          ${fmt(d.female)}
+        </div>
 
-<div class="pill" style="left:${pct(d.male)}">${d.male}</div>
-<div class="pill" style="left:${pct(d.female)}">${d.female}</div>
+        <div class="point male" style="left:${pct(d.male)};"></div>
+        <div class="point female" style="left:${pct(d.female)};"></div>
+      </div>
+    </div>
 
-<div class="point male" style="left:${pct(d.male)}"></div>
-<div class="point female" style="left:${pct(d.female)}"></div>
+    <div class="diff">${diffNum >= 0 ? '+' : ''}${diffNum.toFixed(1)} pts</div>
+  `;
 
-</div>
-
-</div>
-
-<div class="diff">${diff>=0?'+':''}${diff} pts</div>
-`
-
-chart.appendChild(row)
-
-})
-
+  chart.appendChild(row);
+});
 </script>
-
 </body>
 </html>
 
