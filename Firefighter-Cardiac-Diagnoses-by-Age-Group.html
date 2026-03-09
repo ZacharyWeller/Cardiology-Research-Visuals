@@ -1,448 +1,267 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Cardiac Diagnoses by Age Group</title>
-  <style>
-    :root {
-      --bg-1: #fbfdff;
-      --bg-2: #f3f7fb;
-      --panel: #ffffff;
-      --text: #18324a;
-      --muted: #6b7f93;
-      --grid: #e8edf3;
-      --track: #d3dbe5;
-      --male-1: #8bd1ff;
-      --male-2: #1565c0;
-      --female-1: #ffb1b1;
-      --female-2: #c62828;
-      --male-text: #1565c0;
-      --female-text: #c62828;
-      --shadow-lg: 0 8px 30px rgba(100, 116, 139, 0.12);
-      --shadow-sm: 0 3px 10px rgba(100, 116, 139, 0.1);
-      --radius-xl: 30px;
-      --radius-pill: 999px;
-      --left-col: 190px;
-      --plot-w: 850px;
-      --right-col: 140px;
-      --row-h: 45px;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Firefighter Cardiac Diagnoses by Age Group</title>
 
-    * {
-      box-sizing: border-box;
-    }
+<style>
 
-    body {
-      margin: 0;
-      font-family: Arial, Helvetica, sans-serif;
-      background: #ffffff;
-      color: var(--text);
-    }
+:root{
+  --left-col:190px;
+  --plot-w:850px;
+  --right-col:140px;
+  --row-h:45px;
+}
 
-    .wrap {
-      width: min(1400px, 100%);
-      margin: 0 auto;
-      padding: 38px 28px 42px;
-    }
+*{box-sizing:border-box}
 
-    .title {
-      text-align: center;
-      font-size: 34px;
-      font-weight: 700;
-      letter-spacing: -0.02em;
-      margin: 0;
-    }
+body{
+  margin:0;
+  font-family:Arial, Helvetica, sans-serif;
+  background:#ffffff;
+}
 
-    .subtitle {
-      text-align: center;
-      font-size: 17px;
-      color: var(--muted);
-      margin: 10px 0 24px;
-    }
+.wrap{
+  width:min(1200px,100%);
+  margin:auto;
+  padding:30px 20px 40px;
+}
 
-    .legend {
-      display: flex;
-      justify-content: center;
-      gap: 48px;
-      align-items: center;
-      margin-bottom: 18px;
-      flex-wrap: wrap;
-      font-size: 16px;
-      font-weight: 700;
-    }
+.legend{
+  display:flex;
+  justify-content:center;
+  gap:40px;
+  margin-bottom:20px;
+  font-weight:700;
+  font-size:16px;
+}
 
-    .legend-item {
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-    }
+.legend-dot{
+  width:18px;
+  height:18px;
+  border-radius:50%;
+  display:inline-block;
+  margin-right:8px;
+}
 
-    .legend-dot {
-      width: 20px;
-      height: 20px;
-      border-radius: 50%;
-      box-shadow: var(--shadow-sm);
-      flex: 0 0 auto;
-    }
+.male{background:linear-gradient(135deg,#8bd1ff,#1565c0)}
+.female{background:linear-gradient(135deg,#ffb1b1,#c62828)}
 
-    .legend-dot.male {
-      background: linear-gradient(135deg, var(--male-1), var(--male-2));
-    }
+.panel{
+  background:#ffffff;
+}
 
-    .legend-dot.female {
-      background: linear-gradient(135deg, var(--female-1), var(--female-2));
-    }
+.axis-head{
+  display:grid;
+  grid-template-columns:var(--left-col) var(--plot-w) var(--right-col);
+  align-items:center;
+  margin-bottom:12px;
+  font-weight:700;
+  text-align:center;
+  color:#4b5d73;
+}
 
-    .legend-item.male {
-      color: var(--male-text);
-    }
+.axis-scale{
+  display:grid;
+  grid-template-columns:repeat(6,1fr);
+  font-size:13px;
+  color:#5f7288;
+}
 
-    .legend-item.female {
-      color: var(--female-text);
-    }
+.chart-body{
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+}
 
-    .panel {
-      background: var(--panel);
-      border-radius: var(--radius-xl);
-      box-shadow: var(--shadow-lg);
-      padding: 26px 30px 30px;
-      overflow: hidden;
-    }
+.row{
+  display:grid;
+  grid-template-columns:var(--left-col) var(--plot-w) var(--right-col);
+  align-items:center;
+}
 
-    .axis-head,
-    .row {
-      min-height: var(--row-h);
-      position: relative;
-      display: grid;
-      grid-template-columns: var(--left-col) var(--plot-w) var(--right-col);
-      align-items: center;
-      gap: 20px;
-    }
+.label{
+  text-align:right;
+  padding-right:10px;
+  font-weight:700;
+}
 
-    .axis-head {
-      margin-bottom: 14px;
-      padding: 10px 16px 12px;
-      display: grid;
-      grid-template-columns: var(--left-col) var(--plot-w) var(--right-col);
-      align-items: center;
-      gap: 20px;
-      background: #ffffff;
-      border: 1px solid #e8edf3;
-      border-radius: 16px;
-      font-size: 15px;
-    }
+.row-card{
+  background:#f6f8fb;
+  border-radius:18px;
+  border:1px solid #e8edf3;
+  padding:10px 14px;
+}
 
-    .axis-label-left,
-    .axis-label-right {
-      font-size: 16px;
-      font-weight: 700;
-      color: #4b5d73;
-      text-align: center;
-    }
+.plot{
+  position:relative;
+  height:40px;
+}
 
-    .axis-label-left,
-    .axis-label-right {
-      font-size: 16px;
-      font-weight: 700;
-      color: #4b5d73;
-    }
+.connector{
+  position:absolute;
+  top:50%;
+  height:6px;
+  background:#d3dbe5;
+  transform:translateY(-50%);
+  border-radius:999px;
+}
 
-    .axis-label-right {
-      text-align: right;
-    }
+.point{
+  position:absolute;
+  top:50%;
+  width:18px;
+  height:18px;
+  border-radius:50%;
+  transform:translate(-50%,-50%);
+}
 
-    .axis-scale {
-      position: relative;
-      height: 40px;
-      display: grid;
-      grid-template-columns: repeat(6, 1fr);
-      align-items: end;
-      font-weight: 700;
-      color: #4b5d73;
-    }
+.pill{
+  position:absolute;
+  top:-18px;
+  transform:translateX(-50%);
+  background:#fff;
+  padding:2px 8px;
+  border-radius:999px;
+  font-size:12px;
+  font-weight:700;
+  box-shadow:0 1px 3px rgba(0,0,0,0.08);
+}
 
-    .axis-tick {
-      position: relative;
-      text-align: center;
-      font-size: 13px;
-      color: #5f7288;
-      padding-bottom: 4px;
-    }
+.diff{
+  text-align:right;
+  font-weight:700;
+  color:#000;
+}
 
-    .axis-tick::after {
-      content: "";
-      position: absolute;
-      left: 50%;
-      top: 100%;
-      width: 1.5px;
-      height: calc(100% + 560px);
-      transform: translateX(-50%);
-      background: var(--grid);
-      z-index: 0;
-    }
 
-    .chart-body {
-      position: relative;
-      z-index: 1;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      margin-top: 6px;
-    }
+/* -------- PRINT SETTINGS -------- */
 
-    .row {
-      min-height: var(--row-h);
-      position: relative;
-    }
+@media print{
 
-    .label {
-      text-align: right;
-      font-size: 18px;
-      font-weight: 700;
-      color: #243746;
-      padding-right: 10px;
-      white-space: nowrap;
-    }
+  html,body{
+    width:10in;
+    height:8in;
+    margin:0;
+    padding:0;
+    background:#ffffff !important;
+    -webkit-print-color-adjust:exact;
+    print-color-adjust:exact;
+  }
 
-    .row-card {
-      grid-column: 2 / 3;
-      display: grid;
-      grid-template-columns: var(--plot-w);
-      align-items: center;
-      padding: 12px 16px;
-      background: #f6f8fb;
-      border: 1px solid #e8edf3;
-      border-radius: 18px;
-    }
+  .wrap{
+    width:100%;
+    padding:0;
+    margin:0;
+  }
 
-    .plot {
-      position: relative;
-      height: 52px;
-    }
+  .row{
+    break-inside:avoid;
+  }
 
-    .connector {
-      position: absolute;
-      top: 50%;
-      height: 8px;
-      transform: translateY(-50%);
-      border-radius: var(--radius-pill);
-      background: var(--track);
-      z-index: 1;
-    }
+}
 
-    .point {
-      position: absolute;
-      top: 50%;
-      width: 20px;
-      height: 20px;
-      margin-left: -10px;
-      transform: translateY(-50%);
-      border-radius: 50%;
-      box-shadow: var(--shadow-sm);
-      z-index: 3;
-    }
+@page{
+  size:10in 8in;
+  margin:0.5in;
+}
 
-    .point.male {
-      background: linear-gradient(135deg, var(--male-1), var(--male-2));
-    }
-
-    .point.female {
-      background: linear-gradient(135deg, var(--female-1), var(--female-2));
-    }
-
-    .pill {
-      position: absolute;
-      top: 50%;
-      transform: translate(-50%, calc(-50% - 18px));
-      min-width: 46px;
-      height: 22px;
-      padding: 0 10px;
-      border-radius: 999px;
-      background: #fff;
-      font-size: 14px;
-      font-weight: 700;
-      line-height: 22px;
-      text-align: center;
-      box-shadow: 0 1px 3px rgba(15, 23, 42, 0.06);
-      z-index: 4;
-      white-space: nowrap;
-      pointer-events: none;
-    }
-
-    .pill.male {
-      color: var(--male-text);
-    }
-
-    .pill.female {
-      color: var(--female-text);
-    }
-
-    .diff {
-      text-align: right;
-      font-size: 14px;
-      font-weight: 700;
-      white-space: nowrap;
-      color: #18324a;
-    }
-
-    .diff.pos {
-      color: #18324a;
-    }
-
-    .diff.neg {
-      color: #18324a;
-    }
-
-    .footer-note {
-      margin-top: 18px;
-      color: var(--muted);
-      font-size: 13px;
-      text-align: center;
-    }
-
-    @media (max-width: 1280px) {
-      :root {
-        --left-col: 170px;
-        --plot-w: min(720px, 100%);
-        --right-col: 120px;
-      }
-
-      .panel {
-        overflow-x: auto;
-      }
-
-      .chart-shell {
-        min-width: 1050px;
-      }
-    }
-
-    @media (max-width: 760px) {
-      .wrap {
-        padding: 24px 14px 28px;
-      }
-
-      .title {
-        font-size: 28px;
-      }
-
-      .subtitle {
-        font-size: 15px;
-      }
-    }
-  
-
-    /* Print optimization */
-    @media print {
-      body {
-        background: #ffffff !important;
-      }
-
-      .wrap {
-        padding: 0;
-        margin: 0;
-        width: 100%;
-      }
-
-      .panel {
-        box-shadow: none;
-        border: none;
-      }
-    }
-
-    /* Force landscape when exporting to PDF */
-    @page {
-      size: 8in 10in; /* width height */
-      margin: 0.5in;
-    }
-
-  </style>
+</style>
 </head>
+
 <body>
-  <div class="wrap">
-    
 
-    <div class="legend" aria-label="Legend">
-      <div class="legend-item male"><span class="legend-dot male"></span>Firefighters &lt;40</div>
-      <div class="legend-item female"><span class="legend-dot female"></span>Firefighters ≥40</div>
-    </div>
+<div class="wrap">
 
-    <section class="panel">
-      <div class="chart-shell">
-        <div class="axis-head">
-          <div class="axis-label-left">Diagnosis</div>
-          <div class="axis-scale" id="axisScale"></div>
-          <div class="axis-label-right">Difference</div>
-        </div>
+<div class="legend">
+  <div><span class="legend-dot male"></span>Firefighters &lt;40</div>
+  <div><span class="legend-dot female"></span>Firefighters ≥40</div>
+</div>
 
-        <div class="chart-body" id="chart"></div>
-      </div>
-    </section>
+<div class="panel">
 
-    <div class="footer-note">Clean HTML/CSS dumbbell chart using div-based layout instead of SVG.</div>
+<div class="axis-head">
+  <div>Diagnosis</div>
+  <div class="axis-scale">
+    <div>0%</div>
+    <div>20%</div>
+    <div>40%</div>
+    <div>60%</div>
+    <div>80%</div>
+    <div>100%</div>
   </div>
+  <div>Difference</div>
+</div>
 
-  <script>
-    const data = [
-      { label: 'CAD/Ischemic', male: 48.0, female: 83.2 },
-      { label: 'Valvular', male: 10.0, female: 0.8 },
-      { label: 'iLVH', male: 12.0, female: 5.3 },
-      { label: 'CM NOS', male: 6.0, female: 0.0 },
-      { label: 'Aortic', male: 4.0, female: 2.0 },
-      { label: 'Mitral', male: 6.0, female: 2.0 },
-      { label: 'Arrhythmia', male: 20.0, female: 17.9 },
-      { label: 'Myocarditis', male: 4.0, female: 0.8 },
-      { label: 'Pericarditis', male: 2.0, female: 0.8 },
-      { label: 'Congenital', male: 4.0, female: 2.0 },
-      { label: 'Other', male: 14.0, female: 13.4 },
-      { label: 'Normal', male: 48.0, female: 32.4 }
-    ];
+<div class="chart-body" id="chart"></div>
 
-    const maxValue = 100;
-    const axisValues = [0, 20, 40, 60, 80, 100];
-    const axisScale = document.getElementById('axisScale');
-    const chart = document.getElementById('chart');
+</div>
 
-    axisValues.forEach(v => {
-      const tick = document.createElement('div');
-      tick.className = 'axis-tick';
-      tick.textContent = `${v}%`;
-      axisScale.appendChild(tick);
-    });
+</div>
 
-    const pct = value => `${(value / maxValue) * 100}%`;
+<script>
 
-    data.forEach(d => {
-      const row = document.createElement('div');
-      row.className = 'row';
+const data=[
+{label:'CAD/Ischemic',male:48.0,female:83.2},
+{label:'Valvular',male:10.0,female:0.8},
+{label:'iLVH',male:12.0,female:5.3},
+{label:'CM NOS',male:6.0,female:0.0},
+{label:'Aortic',male:4.0,female:2.0},
+{label:'Mitral',male:6.0,female:2.0},
+{label:'Arrhythmia',male:20.0,female:17.9},
+{label:'Myocarditis',male:4.0,female:0.8},
+{label:'Pericarditis',male:2.0,female:0.8},
+{label:'Congenital',male:4.0,female:2.0},
+{label:'Other',male:14.0,female:13.4},
+{label:'Normal',male:48.0,female:32.4}
+]
 
-      const diff = +(d.female - d.male).toFixed(1);
-      const left = Math.min(d.male, d.female);
-      const width = Math.abs(d.female - d.male);
-      const distance = Math.abs(d.female - d.male);
-      const maleAbove = d.male <= d.female;
-      const femaleAbove = !maleAbove;
-      const compactLabels = distance < 6;
+const chart=document.getElementById('chart')
+const max=100
 
-      row.innerHTML = `
-        <div class="label">${d.label}</div>
-        <div class="row-card">
-          <div class="plot">
-            <div class="connector" style="left:${pct(left)}; width:${pct(width)};"></div>
-            <div class="pill male" style="left:${pct(d.male)}; top:50%; transform:translate(-50%, ${compactLabels ? (maleAbove ? '-32px' : '10px') : '-30px'});">${d.male.toFixed(1)}</div>
-            <div class="pill female" style="left:${pct(d.female)}; top:50%; transform:translate(-50%, ${compactLabels ? (femaleAbove ? '-32px' : '10px') : '-30px'});">${d.female.toFixed(1)}</div>
-            <div class="point male" style="left:${pct(d.male)};"></div>
-            <div class="point female" style="left:${pct(d.female)};"></div>
-          </div>
-        </div>
-        <div class="diff">${diff >= 0 ? '+' : '−'}${Math.abs(diff).toFixed(1)} pts</div>
-      `;
+const pct=v=> (v/max*100)+'%'
 
-      chart.appendChild(row);
-    });
-  </script>
+data.forEach(d=>{
+
+const diff=(d.female-d.male).toFixed(1)
+const left=Math.min(d.male,d.female)
+const width=Math.abs(d.female-d.male)
+
+const row=document.createElement('div')
+row.className='row'
+
+row.innerHTML=`
+<div class="label">${d.label}</div>
+
+<div class="row-card">
+
+<div class="plot">
+
+<div class="connector" style="left:${pct(left)};width:${pct(width)}"></div>
+
+<div class="pill" style="left:${pct(d.male)}">${d.male}</div>
+<div class="pill" style="left:${pct(d.female)}">${d.female}</div>
+
+<div class="point male" style="left:${pct(d.male)}"></div>
+<div class="point female" style="left:${pct(d.female)}"></div>
+
+</div>
+
+</div>
+
+<div class="diff">${diff>=0?'+':''}${diff} pts</div>
+`
+
+chart.appendChild(row)
+
+})
+
+</script>
+
 </body>
 </html>
+
 
 
 
