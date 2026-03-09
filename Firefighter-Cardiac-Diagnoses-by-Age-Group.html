@@ -13,6 +13,12 @@
   --row-gap: 8px;
   --row-pad-y: 6px;
   --row-pad-x: 12px;
+  --grid: #dfe6ee;
+  --row-bg: #f6f8fb;
+  --row-border: #e8edf3;
+  --connector: #cfd7e3;
+  --axis: #5f7288;
+  --axis-head: #4b5d73;
 }
 
 *{ box-sizing:border-box; }
@@ -78,13 +84,13 @@ body{
   align-items:end;
   column-gap:12px;
   margin-bottom:8px;
-  color:#4b5d73;
+  color:var(--axis-head);
   font-weight:700;
 }
 
 .axis-title-left{
-  text-align:left;
-  padding-left:2px;
+  text-align:right;
+  padding-right:10px;
   font-size:13px;
 }
 
@@ -95,15 +101,17 @@ body{
 }
 
 .axis-scale{
+  position:relative;
   display:grid;
   grid-template-columns:repeat(6,1fr);
   align-items:end;
   font-size:12px;
-  color:#5f7288;
+  color:var(--axis);
 }
 
 .axis-scale div{
   text-align:center;
+  position:relative;
 }
 
 .chart-body{
@@ -121,31 +129,47 @@ body{
 
 .label{
   text-align:right;
+  justify-self:end;
   padding-right:10px;
   font-weight:700;
   font-size:16px;
   line-height:1.1;
+  white-space:nowrap;
 }
 
 .row-card{
-  background:#f6f8fb;
-  border:1px solid #e8edf3;
+  position:relative;
+  background:var(--row-bg);
+  border:1px solid var(--row-border);
   border-radius:18px;
   padding:var(--row-pad-y) var(--row-pad-x);
+  overflow:hidden;
+}
+
+.gridline{
+  position:absolute;
+  top:0;
+  bottom:0;
+  width:1px;
+  background:var(--grid);
+  z-index:0;
+  pointer-events:none;
 }
 
 .plot{
   position:relative;
-  height:36px;
+  height:54px;
+  z-index:1;
 }
 
 .connector{
   position:absolute;
   top:50%;
   height:6px;
-  background:#d3dbe5;
+  background:var(--connector);
   transform:translateY(-50%);
   border-radius:999px;
+  z-index:1;
 }
 
 .point{
@@ -155,6 +179,7 @@ body{
   height:16px;
   border-radius:50%;
   transform:translate(-50%,-50%);
+  z-index:3;
 }
 
 .pill{
@@ -169,6 +194,7 @@ body{
   box-shadow:0 1px 3px rgba(0,0,0,0.08);
   white-space:nowrap;
   transform:translateX(-50%);
+  z-index:4;
 }
 
 .pill.male-label{
@@ -270,6 +296,7 @@ const data = [
 
 const chart = document.getElementById('chart');
 const max = 100;
+const gridTicks = [0, 20, 40, 60, 80, 100];
 
 const fmt = (v) => Number.isInteger(v) ? String(v) : v.toFixed(1);
 const pct = (v) => `${(v / max) * 100}%`;
@@ -278,31 +305,37 @@ data.forEach(d => {
   const diffNum = +(d.female - d.male).toFixed(1);
   const left = Math.min(d.male, d.female);
   const width = Math.abs(d.female - d.male);
+  const gap = Math.abs(d.male - d.female);
 
-  const close = Math.abs(d.male - d.female) < 6;
+  let femaleTop = -4;
+  let maleTop = 28;
 
-  // Default label lanes:
-  // male slightly above, female higher above.
-  // If close, split one above and one below to prevent collisions.
-  const maleTop = close ? '20px' : '16px';
-  const femaleTop = close ? '-6px' : '-6px';
+  if (gap >= 8) {
+    femaleTop = -4;
+    maleTop = 20;
+  }
 
   const row = document.createElement('div');
   row.className = 'row';
+
+  const gridlinesHtml = gridTicks
+    .map(v => `<div class="gridline" style="left:${pct(v)};"></div>`)
+    .join('');
 
   row.innerHTML = `
     <div class="label">${d.label}</div>
 
     <div class="row-card">
+      ${gridlinesHtml}
       <div class="plot">
         <div class="connector" style="left:${pct(left)}; width:${pct(width)};"></div>
 
-        <div class="pill male-label" style="left:${pct(d.male)}; top:${maleTop};">
-          ${fmt(d.male)}
+        <div class="pill female-label" style="left:${pct(d.female)}; top:${femaleTop}px;">
+          ${fmt(d.female)}
         </div>
 
-        <div class="pill female-label" style="left:${pct(d.female)}; top:${femaleTop};">
-          ${fmt(d.female)}
+        <div class="pill male-label" style="left:${pct(d.male)}; top:${maleTop}px;">
+          ${fmt(d.male)}
         </div>
 
         <div class="point male" style="left:${pct(d.male)};"></div>
@@ -318,7 +351,3 @@ data.forEach(d => {
 </script>
 </body>
 </html>
-
-
-
-
