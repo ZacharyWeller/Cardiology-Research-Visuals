@@ -1,61 +1,62 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Firefighter Cardiac Diagnoses by Age Group</title>
+<meta charset="UTF-8">
+<title>Firefighter Cardiac Diagnoses</title>
 
 <style>
+
 :root{
-  --page-w: 8in;
-  --page-h: 10in;
+  --page-w:8in;
+  --page-h:10in;
 
-  --left-col: 1.65in;
-  --right-col: 0.72in;
+  --left-col:1.65in;
+  --right-col:0.72in;
 
-  --row-gap: 0.055in;
-  --row-pad-y: 0.045in;
-  --row-pad-x: 0.10in;
+  --row-gap:0.055in;
+  --row-pad-y:0.045in;
+  --row-pad-x:0.10in;
 
-  --grid: #dde5ee;
-  --row-bg: #f6f8fb;
-  --row-border: #e8edf3;
-  --connector: #cfd7e3;
-  --axis: #5f7288;
-  --axis-head: #4b5d73;
+  --grid:#dde5ee;
+  --row-bg:#f6f8fb;
+  --row-border:#e8edf3;
+  --connector:#cfd7e3;
 }
 
-*{ box-sizing:border-box; }
+*{box-sizing:border-box}
 
-html, body{
+html,body{
   margin:0;
   padding:0;
-  background:#ffffff;
-  font-family: Arial, Helvetica, sans-serif;
-  color:#000;
+  font-family:Arial,Helvetica,sans-serif;
+  background:#fff;
 }
 
 body{
   display:flex;
   justify-content:center;
-  align-items:flex-start;
 }
 
 .wrap{
   width:var(--page-w);
   height:var(--page-h);
-  padding:0.10in 0.10in 0.08in;
-  background:#fff;
+  padding:.10in .10in .08in;
   overflow:hidden;
-  margin:0 auto;
 }
 
+/* ---------- LEGEND FIX ---------- */
+
 .legend{
+  display:grid;
+  grid-template-columns:var(--left-col) 1fr var(--right-col);
+  margin-bottom:.05in;
+}
+
+.legend-center{
+  grid-column:2;
   display:flex;
   justify-content:center;
-  align-items:center;
-  gap:0.30in;
-  margin:0 0 0.05in;
+  gap:.30in;
   font-weight:700;
   font-size:12px;
 }
@@ -64,48 +65,35 @@ body{
   display:flex;
   align-items:center;
   gap:6px;
-  white-space:nowrap;
 }
 
 .legend-dot{
   width:14px;
   height:14px;
   border-radius:50%;
-  flex:0 0 auto;
 }
 
-.male{
-  background:linear-gradient(135deg,#8bd1ff,#1565c0);
-}
+.male{background:linear-gradient(135deg,#8bd1ff,#1565c0)}
+.female{background:linear-gradient(135deg,#ffb1b1,#c62828)}
 
-.female{
-  background:linear-gradient(135deg,#ffb1b1,#c62828);
-}
-
-.panel{
-  width:100%;
-  margin:0 auto;
-}
+/* ---------- AXIS ---------- */
 
 .axis-head{
   display:grid;
-  grid-template-columns: var(--left-col) minmax(0,1fr) var(--right-col);
-  align-items:end;
-  column-gap:0.08in;
-  margin-bottom:0.03in;
-  color:var(--axis-head);
+  grid-template-columns:var(--left-col) 1fr var(--right-col);
+  column-gap:.08in;
   font-weight:700;
+  margin-bottom:.03in;
 }
 
 .axis-title-left{
   text-align:right;
-  padding-right:0.05in;
+  padding-right:.05in;
   font-size:10px;
 }
 
 .axis-title-right{
   text-align:left;
-  padding-left:0.01in;
   font-size:10px;
 }
 
@@ -113,48 +101,43 @@ body{
   position:relative;
   height:15px;
   font-size:9px;
-  color:var(--axis);
 }
 
 .axis-scale span{
   position:absolute;
   transform:translateX(-50%);
-  white-space:nowrap;
 }
 
 .axis-scale span.first{
-  left:0 !important;
+  left:0;
   transform:none;
 }
 
 .axis-scale span.last{
-  left:100% !important;
+  left:100%;
   transform:translateX(-100%);
 }
+
+/* ---------- CHART ---------- */
 
 .chart-body{
   display:flex;
   flex-direction:column;
   gap:var(--row-gap);
-  width:100%;
 }
 
 .row{
   display:grid;
-  grid-template-columns: var(--left-col) minmax(0,1fr) var(--right-col);
+  grid-template-columns:var(--left-col) 1fr var(--right-col);
+  column-gap:.08in;
   align-items:center;
-  column-gap:0.08in;
-  width:100%;
 }
 
 .label{
   text-align:right;
-  justify-self:end;
-  padding-right:0.05in;
+  padding-right:.05in;
   font-weight:700;
   font-size:11px;
-  line-height:1.05;
-  white-space:nowrap;
 }
 
 .row-card{
@@ -169,28 +152,26 @@ body{
   height:30px;
 }
 
+/* gridlines */
+
 .gridline{
   position:absolute;
   top:1px;
   bottom:1px;
   width:1px;
   background:var(--grid);
-  z-index:0;
-  pointer-events:none;
 }
 
-.gridline.mid{
-  transform:translateX(-50%);
-}
+.gridline.mid{transform:translateX(-50%)}
 
-.gridline.first{
-  left:0 !important;
-}
+.gridline.first{left:0}
 
 .gridline.last{
-  left:100% !important;
+  left:100%;
   transform:translateX(-100%);
 }
+
+/* dumbbell */
 
 .connector{
   position:absolute;
@@ -199,7 +180,6 @@ body{
   background:var(--connector);
   transform:translateY(-50%);
   border-radius:999px;
-  z-index:1;
 }
 
 .point{
@@ -209,7 +189,6 @@ body{
   height:11px;
   border-radius:50%;
   transform:translate(-50%,-50%);
-  z-index:3;
 }
 
 .pill{
@@ -219,166 +198,139 @@ body{
   border-radius:999px;
   background:#fff;
   font-size:8px;
-  line-height:1.05;
   font-weight:700;
-  box-shadow:0 1px 2px rgba(0,0,0,0.08);
-  white-space:nowrap;
   transform:translateX(-50%);
-  z-index:4;
+  box-shadow:0 1px 2px rgba(0,0,0,.08);
 }
 
-.pill.male-label{
-  color:#1565c0;
-}
-
-.pill.female-label{
-  color:#c62828;
-}
+.male-label{color:#1565c0}
+.female-label{color:#c62828}
 
 .diff{
-  text-align:left;
-  padding-left:0.01in;
-  font-weight:600;
   font-size:8.5px;
-  color:#000;
-  white-space:nowrap;
-}
-
-@media print{
-  html, body{
-    width:8in;
-    height:10in;
-    background:#fff !important;
-    -webkit-print-color-adjust:exact;
-    print-color-adjust:exact;
-  }
-
-  body{
-    display:block;
-  }
-
-  .wrap{
-    width:8in;
-    height:10in;
-    padding:0.10in 0.10in 0.08in;
-    margin:0;
-    overflow:hidden;
-  }
-
-  .row{
-    break-inside:avoid;
-  }
+  font-weight:600;
 }
 
 @page{
   size:8in 10in;
   margin:0;
 }
+
 </style>
 </head>
 
 <body>
+
 <div class="wrap">
-  <div class="legend">
-    <div class="legend-item">
-      <span class="legend-dot male"></span>
-      <span>Firefighters &lt;40</span>
-    </div>
-    <div class="legend-item">
-      <span class="legend-dot female"></span>
-      <span>Firefighters ≥40</span>
-    </div>
-  </div>
 
-  <div class="panel">
-    <div class="axis-head">
-      <div class="axis-title-left">Diagnosis</div>
-      <div class="axis-scale">
-        <span class="first" style="left:0%;">0%</span>
-        <span style="left:20%;">20%</span>
-        <span style="left:40%;">40%</span>
-        <span style="left:60%;">60%</span>
-        <span style="left:80%;">80%</span>
-        <span class="last" style="left:100%;">100%</span>
-      </div>
-      <div class="axis-title-right">Difference</div>
-    </div>
+<div class="legend">
+<div></div>
 
-    <div class="chart-body" id="chart"></div>
-  </div>
+<div class="legend-center">
+<div class="legend-item">
+<span class="legend-dot male"></span>
+Firefighters &lt;40
+</div>
+
+<div class="legend-item">
+<span class="legend-dot female"></span>
+Firefighters ≥40
+</div>
+</div>
+
+<div></div>
+</div>
+
+<div class="axis-head">
+
+<div class="axis-title-left">Diagnosis</div>
+
+<div class="axis-scale">
+<span class="first" style="left:0%">0%</span>
+<span style="left:20%">20%</span>
+<span style="left:40%">40%</span>
+<span style="left:60%">60%</span>
+<span style="left:80%">80%</span>
+<span class="last" style="left:100%">100%</span>
+</div>
+
+<div class="axis-title-right">Difference</div>
+
+</div>
+
+<div class="chart-body" id="chart"></div>
+
 </div>
 
 <script>
-const data = [
-  {label:'CAD/Ischemic', male:48.0, female:83.2},
-  {label:'Valvular',     male:10.0, female:0.8},
-  {label:'iLVH',         male:12.0, female:5.3},
-  {label:'CM NOS',       male:6.0,  female:0.0},
-  {label:'Aortic',       male:4.0,  female:2.0},
-  {label:'Mitral',       male:6.0,  female:2.0},
-  {label:'Arrhythmia',   male:20.0, female:17.9},
-  {label:'Myocarditis',  male:4.0,  female:0.8},
-  {label:'Pericarditis', male:2.0,  female:0.8},
-  {label:'Congenital',   male:4.0,  female:2.0},
-  {label:'Other',        male:14.0, female:13.4},
-  {label:'Normal',       male:48.0, female:32.4}
-];
 
-const chart = document.getElementById('chart');
-const max = 100;
-const ticks = [0, 20, 40, 60, 80, 100];
+const data=[
+{label:'CAD/Ischemic',male:48,female:83.2},
+{label:'Valvular',male:10,female:0.8},
+{label:'iLVH',male:12,female:5.3},
+{label:'CM NOS',male:6,female:0},
+{label:'Aortic',male:4,female:2},
+{label:'Mitral',male:6,female:2},
+{label:'Arrhythmia',male:20,female:17.9},
+{label:'Myocarditis',male:4,female:0.8},
+{label:'Pericarditis',male:2,female:0.8},
+{label:'Congenital',male:4,female:2},
+{label:'Other',male:14,female:13.4},
+{label:'Normal',male:48,female:32.4}
+]
 
-const fmt = (v) => Number.isInteger(v) ? String(v) : v.toFixed(1);
-const pct = (v) => `${(v / max) * 100}%`;
+const chart=document.getElementById("chart")
+const ticks=[0,20,40,60,80,100]
 
-data.forEach(d => {
-  const diffNum = Math.abs(+(d.female - d.male).toFixed(1));
-  const left = Math.min(d.male, d.female);
-  const width = Math.abs(d.female - d.male);
+const pct=v=>v+"%"
 
-  const femaleLabelPos = d.female < 3 ? 3 : d.female > 97 ? 97 : d.female;
-  const maleLabelPos = d.male < 3 ? 3 : d.male > 97 ? 97 : d.male;
+data.forEach(d=>{
 
-  const femaleTop = -1;
-  const maleTop = 18;
+const diff=Math.abs((d.female-d.male).toFixed(1))
+const left=Math.min(d.male,d.female)
+const width=Math.abs(d.female-d.male)
 
-  const gridlinesHtml = ticks.map((v, i) => {
-    let cls = 'gridline mid';
-    if (i === 0) cls = 'gridline first';
-    if (i === ticks.length - 1) cls = 'gridline last';
-    return `<div class="${cls}" style="left:${pct(v)};"></div>`;
-  }).join('');
+const grid=ticks.map((v,i)=>{
 
-  const row = document.createElement('div');
-  row.className = 'row';
+let cls="gridline mid"
+if(i===0)cls="gridline first"
+if(i===ticks.length-1)cls="gridline last"
 
-  row.innerHTML = `
-    <div class="label">${d.label}</div>
+return `<div class="${cls}" style="left:${pct(v)}"></div>`
 
-    <div class="row-card">
-      <div class="plot">
-        ${gridlinesHtml}
+}).join("")
 
-        <div class="connector" style="left:${pct(left)}; width:${pct(width)};"></div>
+const row=document.createElement("div")
+row.className="row"
 
-        <div class="pill female-label" style="left:${pct(femaleLabelPos)}; top:${femaleTop}px;">
-          ${fmt(d.female)}
-        </div>
+row.innerHTML=`
 
-        <div class="pill male-label" style="left:${pct(maleLabelPos)}; top:${maleTop}px;">
-          ${fmt(d.male)}
-        </div>
+<div class="label">${d.label}</div>
 
-        <div class="point male" style="left:${pct(d.male)};"></div>
-        <div class="point female" style="left:${pct(d.female)};"></div>
-      </div>
-    </div>
+<div class="row-card">
+<div class="plot">
 
-    <div class="diff">${diffNum.toFixed(1)} pts</div>
-  `;
+${grid}
 
-  chart.appendChild(row);
-});
+<div class="connector" style="left:${pct(left)};width:${pct(width)}"></div>
+
+<div class="pill male-label" style="left:${pct(d.male)};top:18px">${d.male}</div>
+<div class="pill female-label" style="left:${pct(d.female)};top:-2px">${d.female}</div>
+
+<div class="point male" style="left:${pct(d.male)};background:#1565c0"></div>
+<div class="point female" style="left:${pct(d.female)};background:#c62828"></div>
+
+</div>
+</div>
+
+<div class="diff">${diff} pts</div>
+`
+
+chart.appendChild(row)
+
+})
+
 </script>
+
 </body>
 </html>
